@@ -86,11 +86,10 @@ Because public registration for administrators is strictly disabled to prevent u
 5. Open the **SQL Editor** and run the following insert statement, replacing the UUID and email with your values:
 
 ```sql
-INSERT INTO public.admin_users (id, email, full_name, role)
+INSERT INTO public.admin_users (id, email, role)
 VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890', -- Paste the Auth User UID here
   'admin@projectadda.com',
-  'Primary Operations Admin',
   'super_admin'
 );
 ```
