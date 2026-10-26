@@ -24,21 +24,37 @@ export default function AdminLoginPage() {
       // If Supabase credentials are configured in environment
       if (isSupabaseConfigured()) {
         const supabase = createClient();
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
           password,
         });
 
-        if (error) {
-          setErrorMessage(error.message);
+        if (authError) {
+          setErrorMessage(authError.message);
           setIsLoading(false);
           return;
         }
+
+        if (authData?.user) {
+          // Check if this user UID exists in the admin_users whitelist table
+          const { data: adminRecord } = await supabase
+            .from("admin_users")
+            .select("id, role")
+            .eq("id", authData.user.id)
+            .maybeSingle();
+
+          if (!adminRecord) {
+            setErrorMessage(
+              `User authenticated, but UID "${authData.user.id}" is not in public.admin_users. Please run the SQL insert in Supabase SQL Editor.`
+            );
+            setIsLoading(false);
+            return;
+          }
+        }
       }
 
-      // Successful auth or local dev mode fallback -> redirect to enquiries
-      router.push("/admin/enquiries");
-      router.refresh();
+      // Successful auth or local dev mode fallback -> full page navigation to ensure fresh cookies
+      window.location.href = "/admin/enquiries";
     } catch (err: any) {
       setErrorMessage(err.message || "Failed to authenticate. Please check your credentials.");
       setIsLoading(false);
