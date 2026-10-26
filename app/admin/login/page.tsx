@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { Lock, ArrowRight, AlertCircle, ShieldCheck } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { createClient, isClientSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -22,7 +21,7 @@ export default function AdminLoginPage() {
 
     try {
       // If Supabase credentials are configured in environment
-      if (isSupabaseConfigured()) {
+      if (isClientSupabaseConfigured()) {
         const supabase = createClient();
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
           email: email.trim(),
