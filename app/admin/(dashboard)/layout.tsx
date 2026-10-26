@@ -5,6 +5,8 @@ import { Logo } from "@/components/brand/Logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { LogOut, Shield } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardLayout({
   children,
 }: {
